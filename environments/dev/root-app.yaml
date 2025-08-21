@@ -19,6 +19,16 @@ spec:
             repoURL: https://prometheus-community.github.io/helm-charts
             chart: prometheus
             version: 25.25.0
+          - name: argo-rollouts
+            repoURL: https://argoproj.github.io/argo-helm
+            chart: argo-rollouts
+            version: 2.40.3
+            helm:
+            values: |
+            dashboard:
+            enabled: true
+            service:
+            type: ClusterIP
   template:
     metadata:
       name: '{{name}}'
