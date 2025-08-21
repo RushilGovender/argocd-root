@@ -24,11 +24,11 @@ spec:
             chart: argo-rollouts
             version: 2.40.3
             helm:
-            values: |
-            dashboard:
-            enabled: true
-            service:
-            type: ClusterIP
+              values: |
+                dashboard:
+                  enabled: true
+                  service:
+                    type: ClusterIP
   template:
     metadata:
       name: '{{name}}'
