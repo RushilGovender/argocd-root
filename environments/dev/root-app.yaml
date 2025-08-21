@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: root-dev
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: nginx
+            repoURL: https://charts.bitnami.com/bitnami
+            chart: nginx
+            version: 18.2.2
+          - name: grafana
+            repoURL: https://grafana.github.io/helm-charts
+            chart: grafana
+            version: 8.4.6
+          - name: prometheus
+            repoURL: https://prometheus-community.github.io/helm-charts
+            chart: prometheus
+            version: 25.25.0
+  template:
+    metadata:
+      name: '{{name}}'
+      namespace: argocd
+      labels:
+        managed-by: applicationset
+        env: dev
+    spec:
+      project: default
+      source:
+        repoURL: '{{repoURL}}'
+        chart: '{{chart}}'
+        targetRevision: '{{version}}'
+        helm:
+          parameters:
+            - name: service.type
+              value: ClusterIP
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{name}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
