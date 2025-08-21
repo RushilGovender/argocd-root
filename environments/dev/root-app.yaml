@@ -23,14 +23,17 @@ spec:
             repoURL: https://argoproj.github.io/argo-helm
             chart: argo-rollouts
             version: 2.40.3
+            # Optional per-app Helm values (multi-line)
             values: |
               dashboard:
                 enabled: true
                 service:
                   type: ClusterIP
   template:
+    # Enable Go templating for fields below
+    goTemplate: true
     metadata:
-      name: '{{name}}'
+      name: '{{ .name }}'
       namespace: argocd
       labels:
         managed-by: applicationset
@@ -38,18 +41,16 @@ spec:
     spec:
       project: default
       source:
-        repoURL: '{{repoURL}}'
-        chart: '{{chart}}'
-        targetRevision: '{{version}}'
-        {{- /* Only render the helm.values section if the element provided .values */}}
-        {{- if .values }}
+        repoURL: '{{ .repoURL }}'
+        chart: '{{ .chart }}'
+        targetRevision: '{{ .version }}'
         helm:
-          values: |
-            {{- .values | nindent 12 }}
-        {{- end }}
+          # Render an empty string when the element has no 'values'
+          values: |-
+            {{- .values | default "" }}
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{name}}'
+        namespace: '{{ .name }}'
       syncPolicy:
         automated:
           prune: true
