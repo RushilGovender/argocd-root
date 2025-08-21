@@ -23,12 +23,11 @@ spec:
             repoURL: https://argoproj.github.io/argo-helm
             chart: argo-rollouts
             version: 2.40.3
-            helm:
-              values: |
-                dashboard:
-                  enabled: true
-                  service:
-                    type: ClusterIP
+            values: |
+              dashboard:
+                enabled: true
+                service:
+                  type: ClusterIP
   template:
     metadata:
       name: '{{name}}'
@@ -42,10 +41,12 @@ spec:
         repoURL: '{{repoURL}}'
         chart: '{{chart}}'
         targetRevision: '{{version}}'
+        {{- /* Only render the helm.values section if the element provided .values */}}
+        {{- if .values }}
         helm:
-          parameters:
-            - name: service.type
-              value: ClusterIP
+          values: |
+            {{- .values | nindent 12 }}
+        {{- end }}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{name}}'
