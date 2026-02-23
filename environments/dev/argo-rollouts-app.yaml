@@ -17,7 +17,7 @@ spec:
             type: ClusterIP
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-rollouts
+    namespace: argo-rollouts-ns
   syncPolicy:
     automated:
       prune: true
