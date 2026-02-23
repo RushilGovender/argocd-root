@@ -7,10 +7,6 @@ spec:
   generators:
     - list:
         elements:
-          - name: nginx
-            repoURL: https://charts.bitnami.com/bitnami
-            chart: nginx
-            version: 18.2.2
           - name: grafana
             repoURL: https://grafana.github.io/helm-charts
             chart: grafana
